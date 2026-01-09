@@ -1,0 +1,146 @@
+@import "tailwindcss";
+
+/* Theme CSS Variables */
+:root {
+  /* Light theme (default) */
+  --color-bg-primary: #f1f5f9;
+  --color-bg-secondary: #e2e8f0;
+  --color-bg-tertiary: #cbd5e1;
+  
+  --color-surface-primary: #ffffff;
+  --color-surface-secondary: #e2e8f0;
+  --color-surface-tertiary: #cbd5e1;
+  
+  /* For elements that need dark bg even in light mode (like number balls) */
+  --color-surface-inverted: #475569;
+  
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #334155;
+  --color-text-tertiary: #475569;
+  --color-text-muted: #64748b;
+  /* For text on inverted surfaces */
+  --color-text-on-inverted: #ffffff;
+  
+  --color-border-primary: #cbd5e1;
+  --color-border-secondary: #94a3b8;
+  
+  --color-chart-grid: #cbd5e1;
+  --color-chart-tooltip-bg: #ffffff;
+  --color-chart-tooltip-border: #cbd5e1;
+  
+  --color-scrollbar-track: #e2e8f0;
+  --color-scrollbar-thumb: #94a3b8;
+  --color-scrollbar-thumb-hover: #64748b;
+  
+  --color-status-success: #16a34a;
+  --color-status-warning: #ca8a04;
+  --color-status-error: #dc2626;
+  --color-status-info: #2563eb;
+}
+
+.dark {
+  --color-bg-primary: #030712;
+  --color-bg-secondary: #111827;
+  --color-bg-tertiary: #1f2937;
+  
+  --color-surface-primary: #1f2937;
+  --color-surface-secondary: #374151;
+  --color-surface-tertiary: #4b5563;
+  
+  --color-surface-inverted: #374151;
+  
+  --color-text-primary: #f9fafb;
+  --color-text-secondary: #e5e7eb;
+  --color-text-tertiary: #9ca3af;
+  --color-text-muted: #6b7280;
+  --color-text-on-inverted: #ffffff;
+  
+  --color-border-primary: #374151;
+  --color-border-secondary: #4b5563;
+  
+  --color-chart-grid: #374151;
+  --color-chart-tooltip-bg: #1f2937;
+  --color-chart-tooltip-border: #374151;
+  
+  --color-scrollbar-track: #1f2937;
+  --color-scrollbar-thumb: #4b5563;
+  --color-scrollbar-thumb-hover: #6b7280;
+  
+  --color-status-success: #22c55e;
+  --color-status-warning: #eab308;
+  --color-status-error: #ef4444;
+  --color-status-info: #3b82f6;
+}
+
+/* Tailwind v4 custom theme tokens */
+@theme {
+  --color-bg-primary: var(--color-bg-primary);
+  --color-bg-secondary: var(--color-bg-secondary);
+  --color-bg-tertiary: var(--color-bg-tertiary);
+  
+  --color-surface-primary: var(--color-surface-primary);
+  --color-surface-secondary: var(--color-surface-secondary);
+  --color-surface-tertiary: var(--color-surface-tertiary);
+  --color-surface-inverted: var(--color-surface-inverted);
+  
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-tertiary: var(--color-text-tertiary);
+  --color-text-muted: var(--color-text-muted);
+  --color-text-on-inverted: var(--color-text-on-inverted);
+  
+  --color-border-primary: var(--color-border-primary);
+  --color-border-secondary: var(--color-border-secondary);
+  
+  --color-status-success: var(--color-status-success);
+  --color-status-warning: var(--color-status-warning);
+  --color-status-error: var(--color-status-error);
+  --color-status-info: var(--color-status-info);
+}
+
+body {
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-scrollbar-track);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-scrollbar-thumb);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-scrollbar-thumb-hover);
+}
+
+/* Number grid animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.number-ball-enter {
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Theme transition for surfaces */
+.theme-transition {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
