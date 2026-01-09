@@ -1,0 +1,42 @@
+{
+  "name": "@loterias/frontend",
+  "version": "0.1.0",
+  "private": true,
+  "publishConfig": {
+    "registry": "http://192.168.1.214:30081/repository/npm-hosted/"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/ 2>/dev/null || true",
+    "start": "next start",
+    "lint": "eslint",
+    "package": "npm run build && cd .next && tar -czvf ../loterias-frontend-$npm_package_version.tar.gz standalone",
+    "publish:nexus": "npm run package && curl -u admin:${NPM_PASSWORD:-} --upload-file loterias-frontend-$npm_package_version.tar.gz http://192.168.1.214:30081/repository/builds/loterias-frontend/loterias-frontend-$npm_package_version.tar.gz"
+  },
+  "dependencies": {
+    "@datadog/browser-logs": "^6.27.1",
+    "@datadog/browser-rum": "^6.27.1",
+    "@nivo/bar": "^0.99.0",
+    "@nivo/core": "^0.99.0",
+    "@nivo/line": "^0.99.0",
+    "@nivo/pie": "^0.99.0",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.563.0",
+    "next": "16.1.6",
+    "pino": "^9.6.0",
+    "pino-loki": "^2.3.1",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "web-vitals": "^5.1.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.6",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

@@ -1,0 +1,14 @@
+node_modules/
+.next/
+out/
+build/
+.env.local
+.env*.local
+*.log
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+*.tar.gz
