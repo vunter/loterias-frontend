@@ -1,0 +1,8 @@
+node_modules
+.next
+*.tgz
+*.tar.gz
+.env.local
+.git
+.gitignore
+*.md
