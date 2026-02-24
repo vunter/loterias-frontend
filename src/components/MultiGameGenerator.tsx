@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { api, TipoLoteria, Estrategia, GerarJogoResponse, GerarJogoRequest, LOTERIAS } from '@/lib/api';
 import { writeToClipboard, downloadFile, formatGameLine } from '@/lib/game-export';
 import logger from '@/lib/logger';
-import { Dices, Loader2, Copy, Check, Calendar, CalendarDays, FileText, ClipboardList, Zap, Settings, Heart, ChevronDown, ChevronUp, Brain } from 'lucide-react';
+import { Dices, Loader2, Copy, Check, Calendar, CalendarDays, FileText, ClipboardList, Zap, Settings, Heart, ChevronDown, ChevronUp, Brain, Flame, Snowflake, Scale, Ban, Clover, Lightbulb, X, Clock } from 'lucide-react';
 import clsx from 'clsx';
 
 type DayOfWeek = 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY';
@@ -407,7 +407,7 @@ export function MultiGameGenerator() {
                     onChange={(e) => setUsarNumerosQuentes(e.target.checked)}
                     className="w-5 h-5 rounded accent-red-500"
                   />
-                  <span className="text-text-primary">🔥 Priorizar Quentes</span>
+                  <span className="text-text-primary"><Flame className="w-4 h-4 inline-block" /> Priorizar Quentes</span>
                 </label>
                 <label className="flex items-center gap-3 cursor-pointer">
                   <input
@@ -416,7 +416,7 @@ export function MultiGameGenerator() {
                     onChange={(e) => setUsarNumerosFrios(e.target.checked)}
                     className="w-5 h-5 rounded accent-blue-500"
                   />
-                  <span className="text-text-primary">❄️ Incluir Frios</span>
+                  <span className="text-text-primary"><Snowflake className="w-4 h-4 inline-block" /> Incluir Frios</span>
                 </label>
                 <label className="flex items-center gap-3 cursor-pointer">
                   <input
@@ -425,7 +425,7 @@ export function MultiGameGenerator() {
                     onChange={(e) => setUsarNumerosAtrasados(e.target.checked)}
                     className="w-5 h-5 rounded accent-purple-500"
                   />
-                  <span className="text-text-primary">⏰ Incluir Atrasados</span>
+                  <span className="text-text-primary"><Clock className="w-4 h-4 inline-block" /> Incluir Atrasados</span>
                 </label>
                 <label className="flex items-center gap-3 cursor-pointer">
                   <input
@@ -434,7 +434,7 @@ export function MultiGameGenerator() {
                     onChange={(e) => setBalancearParesImpares(e.target.checked)}
                     className="w-5 h-5 rounded accent-green-500"
                   />
-                  <span className="text-text-primary">⚖️ Balancear Pares/Ímpares</span>
+                  <span className="text-text-primary"><Scale className="w-4 h-4 inline-block" /> Balancear Pares/Ímpares</span>
                 </label>
                 <label className="flex items-center gap-3 cursor-pointer">
                   <input
@@ -443,7 +443,7 @@ export function MultiGameGenerator() {
                     onChange={(e) => setEvitarSequenciais(e.target.checked)}
                     className="w-5 h-5 rounded accent-yellow-500"
                   />
-                  <span className="text-text-primary">🚫 Evitar Sequenciais</span>
+                  <span className="text-text-primary"><Ban className="w-4 h-4 inline-block" /> Evitar Sequenciais</span>
                 </label>
               </div>
             )}
@@ -563,7 +563,7 @@ export function MultiGameGenerator() {
                                     <>
                                       <span className="text-text-muted mx-1">+</span>
                                       <div className="flex items-center gap-1 bg-yellow-600/20 px-2 py-1 rounded-lg border border-yellow-600/50">
-                                        <span className="text-yellow-400 text-xs mr-1">🍀</span>
+                                        <Clover className="w-4 h-4 inline-block text-yellow-400 mr-1" />
                                         {trevos.map((num, j) => (
                                           <span
                                             key={j}
@@ -666,7 +666,7 @@ export function MultiGameGenerator() {
                 onClick={() => setDebugModalData(null)}
                 className="p-2 hover:bg-surface-tertiary rounded-lg transition-colors text-text-tertiary"
               >
-                ✕
+                <X className="w-4 h-4" />
               </button>
             </div>
 
@@ -675,7 +675,7 @@ export function MultiGameGenerator() {
               {/* Etapas */}
               {debugModalData.response.debug.etapas?.length > 0 && (
                 <div className="bg-surface-primary rounded-lg p-4">
-                  <h4 className="text-sm font-medium text-text-secondary mb-3">📋 Etapas do Processo</h4>
+                  <h4 className="text-sm font-medium text-text-secondary mb-3"><ClipboardList className="w-4 h-4 inline-block" /> Etapas do Processo</h4>
                   <ol className="list-decimal list-inside space-y-1">
                     {debugModalData.response.debug.etapas.map((etapa, idx) => (
                       <li key={idx} className="text-sm text-text-tertiary">{etapa}</li>
@@ -688,7 +688,7 @@ export function MultiGameGenerator() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {debugModalData.response.debug.numerosQuentes?.length > 0 && (
                   <div className="bg-surface-primary rounded-lg p-3">
-                    <h4 className="text-xs font-medium text-red-400 mb-2">🔥 Top 10 Quentes</h4>
+                    <h4 className="text-xs font-medium text-red-400 mb-2"><Flame className="w-4 h-4 inline-block" /> Top 10 Quentes</h4>
                     <div className="flex flex-wrap gap-1">
                       {[...debugModalData.response.debug.numerosQuentes].sort((a, b) => a - b).map(n => (
                         <span key={n} className="bg-red-600 text-white text-xs px-2 py-1 rounded">
@@ -700,7 +700,7 @@ export function MultiGameGenerator() {
                 )}
                 {debugModalData.response.debug.numerosFrios?.length > 0 && (
                   <div className="bg-surface-primary rounded-lg p-3">
-                    <h4 className="text-xs font-medium text-blue-400 mb-2">❄️ Top 10 Frios</h4>
+                    <h4 className="text-xs font-medium text-blue-400 mb-2"><Snowflake className="w-4 h-4 inline-block" /> Top 10 Frios</h4>
                     <div className="flex flex-wrap gap-1">
                       {[...debugModalData.response.debug.numerosFrios].sort((a, b) => a - b).map(n => (
                         <span key={n} className="bg-blue-600 text-white text-xs px-2 py-1 rounded">
@@ -712,7 +712,7 @@ export function MultiGameGenerator() {
                 )}
                 {debugModalData.response.debug.numerosAtrasados?.length > 0 && (
                   <div className="bg-surface-primary rounded-lg p-3">
-                    <h4 className="text-xs font-medium text-purple-400 mb-2">⏰ Top 10 Atrasados</h4>
+                    <h4 className="text-xs font-medium text-purple-400 mb-2"><Clock className="w-4 h-4 inline-block" /> Top 10 Atrasados</h4>
                     <div className="flex flex-wrap gap-1">
                       {[...debugModalData.response.debug.numerosAtrasados].sort((a, b) => a - b).map(n => (
                         <span key={n} className="bg-purple-600 text-white text-xs px-2 py-1 rounded">
@@ -732,7 +732,7 @@ export function MultiGameGenerator() {
                 
                 return (
                   <div className="bg-surface-primary rounded-lg p-4">
-                    <h4 className="text-sm font-medium text-text-secondary mb-2">⚖️ Pesos por Número (Top 20)</h4>
+                    <h4 className="text-sm font-medium text-text-secondary mb-2"><Scale className="w-4 h-4 inline-block" /> Pesos por Número (Top 20)</h4>
                     <div className="flex flex-wrap gap-2">
                       {entries
                         .sort(([, a], [, b]) => b - a)
@@ -751,7 +751,7 @@ export function MultiGameGenerator() {
               {/* Critério */}
               {debugModalData.response.debug.criteriosUsados && (
                 <div className="bg-surface-primary rounded-lg p-4">
-                  <h4 className="text-sm font-medium text-text-secondary mb-2">💡 Critério Utilizado</h4>
+                  <h4 className="text-sm font-medium text-text-secondary mb-2"><Lightbulb className="w-4 h-4 inline-block" /> Critério Utilizado</h4>
                   <p className="text-sm text-text-tertiary">{debugModalData.response.debug.criteriosUsados}</p>
                 </div>
               )}

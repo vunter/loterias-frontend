@@ -7,7 +7,7 @@ import { writeToClipboard, downloadFile, formatAllGamesText, generateCSV, genera
 import logger from '@/lib/logger';
 import { NumberBall } from './NumberBall';
 import { JogosHistorico, salvarJogoNoHistorico } from './JogosHistorico';
-import { Dices, Loader2, Copy, Check, Settings, Zap, Brain, ChevronDown, ChevronUp, Heart, CalendarDays, Download, FileText, ClipboardList } from 'lucide-react';
+import { Dices, Loader2, Copy, Check, Settings, Zap, Brain, ChevronDown, ChevronUp, Heart, CalendarDays, Download, FileText, ClipboardList, Clover, Flame, Snowflake, Scale, Lightbulb, Clock } from 'lucide-react';
 import { ShareButtons } from './ShareButtons';
 
 interface GameGeneratorProps {
@@ -258,7 +258,7 @@ export function GameGenerator({ tipo }: GameGeneratorProps) {
                   className="w-full accent-yellow-500"
                 />
                 <div className="text-center text-text-primary font-bold">
-                  {quantidadeTrevos} 🍀
+                  {quantidadeTrevos} <Clover className="w-4 h-4 inline-block" />
                 </div>
               </div>
             )}
@@ -386,7 +386,7 @@ export function GameGenerator({ tipo }: GameGeneratorProps) {
                   className="w-full accent-yellow-500"
                 />
                 <div className="text-center text-text-primary font-bold">
-                  {quantidadeTrevos} 🍀
+                  {quantidadeTrevos} <Clover className="w-4 h-4 inline-block" />
                 </div>
               </div>
             )}
@@ -563,7 +563,7 @@ export function GameGenerator({ tipo }: GameGeneratorProps) {
                           <>
                             <span className="text-text-muted mx-1">+</span>
                             <div className="flex items-center gap-1 bg-yellow-600/20 px-2 py-1 rounded-lg border border-yellow-600/50">
-                              <span className="text-yellow-400 text-sm mr-1">🍀</span>
+                              <Clover className="w-4 h-4 inline-block text-yellow-400 mr-1" />
                               {trevos.map((num, j) => (
                                 <span
                                   key={j}
@@ -659,7 +659,7 @@ export function GameGenerator({ tipo }: GameGeneratorProps) {
                 <div className="mt-4 space-y-4">
                   {/* Etapas */}
                   <div className="bg-bg-secondary rounded-lg p-4">
-                    <h4 className="text-sm font-medium text-text-secondary mb-2">📋 Etapas do Processo</h4>
+                    <h4 className="text-sm font-medium text-text-secondary mb-2"><ClipboardList className="w-4 h-4 inline-block" /> Etapas do Processo</h4>
                     <ol className="list-decimal list-inside space-y-1">
                       {result.debug.etapas?.map((etapa, i) => (
                         <li key={i} className="text-sm text-text-tertiary">{etapa}</li>
@@ -671,7 +671,7 @@ export function GameGenerator({ tipo }: GameGeneratorProps) {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     {result.debug.numerosQuentes?.length > 0 && (
                       <div className="bg-bg-secondary rounded-lg p-3">
-                        <h4 className="text-xs font-medium text-red-400 mb-2">🔥 Top 10 Quentes</h4>
+                        <h4 className="text-xs font-medium text-red-400 mb-2"><Flame className="w-4 h-4 inline-block" /> Top 10 Quentes</h4>
                         <div className="flex flex-wrap gap-1">
                           {[...result.debug.numerosQuentes].sort((a, b) => a - b).map(n => (
                             <span key={n} className="bg-red-600 text-white text-xs px-2 py-1 rounded">
@@ -683,7 +683,7 @@ export function GameGenerator({ tipo }: GameGeneratorProps) {
                     )}
                     {result.debug.numerosFrios?.length > 0 && (
                       <div className="bg-bg-secondary rounded-lg p-3">
-                        <h4 className="text-xs font-medium text-blue-400 mb-2">❄️ Top 10 Frios</h4>
+                        <h4 className="text-xs font-medium text-blue-400 mb-2"><Snowflake className="w-4 h-4 inline-block" /> Top 10 Frios</h4>
                         <div className="flex flex-wrap gap-1">
                           {[...result.debug.numerosFrios].sort((a, b) => a - b).map(n => (
                             <span key={n} className="bg-blue-600 text-white text-xs px-2 py-1 rounded">
@@ -695,7 +695,7 @@ export function GameGenerator({ tipo }: GameGeneratorProps) {
                     )}
                     {result.debug.numerosAtrasados?.length > 0 && (
                       <div className="bg-bg-secondary rounded-lg p-3">
-                        <h4 className="text-xs font-medium text-purple-400 mb-2">⏰ Top 10 Atrasados</h4>
+                        <h4 className="text-xs font-medium text-purple-400 mb-2"><Clock className="w-4 h-4 inline-block" /> Top 10 Atrasados</h4>
                         <div className="flex flex-wrap gap-1">
                           {[...result.debug.numerosAtrasados].sort((a, b) => a - b).map(n => (
                             <span key={n} className="bg-purple-600 text-white text-xs px-2 py-1 rounded">
@@ -787,7 +787,7 @@ export function GameGenerator({ tipo }: GameGeneratorProps) {
                   {/* Pesos (Top 20) */}
                   {result.debug.pesosFinais && Object.keys(result.debug.pesosFinais).length > 0 && (
                     <div className="bg-bg-secondary rounded-lg p-4">
-                      <h4 className="text-sm font-medium text-text-secondary mb-2">⚖️ Pesos por Número (Top 20)</h4>
+                      <h4 className="text-sm font-medium text-text-secondary mb-2"><Scale className="w-4 h-4 inline-block" /> Pesos por Número (Top 20)</h4>
                       <div className="flex flex-wrap gap-2">
                         {Object.entries(result.debug.pesosFinais)
                           .sort(([, a], [, b]) => b - a)
@@ -805,7 +805,7 @@ export function GameGenerator({ tipo }: GameGeneratorProps) {
                   {/* Critério */}
                   {result.debug.criteriosUsados && (
                     <div className="bg-bg-secondary rounded-lg p-3">
-                      <h4 className="text-xs font-medium text-text-tertiary mb-1">💡 Critério Utilizado</h4>
+                      <h4 className="text-xs font-medium text-text-tertiary mb-1"><Lightbulb className="w-4 h-4 inline-block" /> Critério Utilizado</h4>
                       <p className="text-sm text-text-secondary">{result.debug.criteriosUsados}</p>
                     </div>
                   )}

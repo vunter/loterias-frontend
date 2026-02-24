@@ -1,7 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-import { LayoutDashboard, Sparkles, Layers, Shuffle, CloudDownload, Clock, RefreshCw } from 'lucide-react';
+import { LayoutDashboard, Sparkles, Layers, Shuffle, CloudDownload, Clock, RefreshCw, Dices } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import clsx from 'clsx';
 
@@ -34,7 +34,7 @@ export function AppHeader({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-6">
             <h1 className="text-2xl font-bold text-text-primary flex items-center gap-2">
-              🎰 Loterias Analyzer
+              <Dices className="w-5 h-5 inline-block mr-1" /> Loterias Analyzer
             </h1>
             <nav className="flex gap-1 bg-surface-primary rounded-lg p-1" aria-label="Navegação principal">
               <SectionButton

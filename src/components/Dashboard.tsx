@@ -43,7 +43,7 @@ export function Dashboard({ data, tipo }: DashboardProps) {
               </div>
               <div>
                 <h2 className="text-lg font-bold text-yellow-400 flex items-center gap-2">
-                  🔥 ACUMULOU!
+                  <Flame className="w-4 h-4 inline-block" /> ACUMULOU!
                   {consecutiveAccumulations > 1 && (
                     <span className="text-sm font-normal text-yellow-300/80">
                       ({consecutiveAccumulations}x consecutivos)

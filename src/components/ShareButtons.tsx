@@ -19,14 +19,14 @@ function buildShareText(tipo: TipoLoteria, result: GerarJogoResponse): string {
     return `Jogo ${i + 1}: ${nums}`;
   });
 
-  let text = `🍀 ${name} — ${result.jogos.length} jogo(s)\n`;
+  let text = `${name} — ${result.jogos.length} jogo(s)\n`;
   text += `Estratégia: ${result.estrategia}\n\n`;
   text += lines.join('\n');
 
-  if (result.timeSugerido) text += `\n\n❤️ Time: ${result.timeSugerido}`;
-  if (result.mesSugerido) text += `\n\n📅 Mês: ${result.mesSugerido}`;
+  if (result.timeSugerido) text += `\n\nTime: ${result.timeSugerido}`;
+  if (result.mesSugerido) text += `\n\nMes: ${result.mesSugerido}`;
 
-  text += '\n\n📊 Gerado com Loterias Analyzer';
+  text += '\n\nGerado com Loterias Analyzer';
   return text;
 }
 
@@ -58,7 +58,7 @@ export function ShareButtons({ tipo, result }: ShareButtonsProps) {
   const shareTwitter = () => {
     // Twitter/X has a 280 char limit, so shorten
     const loteriaInfo = LOTERIAS.find(l => l.value === tipo);
-    const short = `🍀 ${loteriaInfo?.label} — ${result.jogos.length} jogo(s) gerado(s) com Loterias Analyzer!\n\n${result.jogos.slice(0, 3).map((j, i) => `${i + 1}: ${j.join('-')}`).join('\n')}${result.jogos.length > 3 ? `\n+${result.jogos.length - 3} mais...` : ''}`;
+    const short = `${loteriaInfo?.label} — ${result.jogos.length} jogo(s) gerado(s) com Loterias Analyzer!\n\n${result.jogos.slice(0, 3).map((j, i) => `${i + 1}: ${j.join('-')}`).join('\n')}${result.jogos.length > 3 ? `\n+${result.jogos.length - 3} mais...` : ''}`;
     const encoded = encodeURIComponent(short);
     window.open(`https://twitter.com/intent/tweet?text=${encoded}`, '_blank', 'noopener,noreferrer');
   };
