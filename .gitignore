@@ -12,3 +12,10 @@ build/
 *~
 .DS_Store
 *.tar.gz
+
+# Unused default SVGs
+public/file.svg
+public/globe.svg
+public/next.svg
+public/vercel.svg
+public/window.svg
