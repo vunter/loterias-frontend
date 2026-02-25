@@ -60,6 +60,7 @@ export function MultiGameGenerator() {
   const [estrategias, setEstrategias] = useState<Estrategia[]>([]);
   const [selectedLoterias, setSelectedLoterias] = useState<TipoLoteria[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [results, setResults] = useState<GeneratedResult[]>([]);
   const [copiedIndex, setCopiedIndex] = useState<string | null>(null);
   const [copiedAll, setCopiedAll] = useState(false);
@@ -122,6 +123,7 @@ export function MultiGameGenerator() {
     if (selectedLoterias.length === 0) return;
 
     setLoading(true);
+    setError(null);
     setResults([]);
     setDebugModalData(null);
 
@@ -159,10 +161,15 @@ export function MultiGameGenerator() {
       const failed = settledResults.filter(r => r.status === 'rejected');
       if (failed.length > 0) {
         logger.warn({ failedCount: failed.length }, 'Some lottery generations failed');
+        setError(`Falha ao gerar jogos para ${failed.length} loteria(s). Os demais foram gerados com sucesso.`);
+      }
+      if (successful.length === 0 && failed.length > 0) {
+        setError('Erro ao gerar jogos. Tente novamente.');
       }
       setResults(successful);
-    } catch (error) {
-      logger.error({ err: error }, 'Failed to generate games');
+    } catch (err) {
+      logger.error({ err }, 'Failed to generate games');
+      setError('Erro ao gerar jogos. Tente novamente.');
     } finally {
       setLoading(false);
     }
@@ -488,6 +495,12 @@ export function MultiGameGenerator() {
           )}
         </button>
       </div>
+
+      {error && (
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4 text-red-700 dark:text-red-400" role="alert">
+          {error}
+        </div>
+      )}
 
       {/* Resultados */}
       {results.length > 0 && (

@@ -38,7 +38,7 @@ function formatRatio(prob: number): string {
 function formatPercent(prob: number): string {
   if (prob <= 0) return '0%';
   if (prob >= 1) return '100%';
-  if (prob < 0.000001) return prob.toExponential(2) + '%';
+  if (prob < 0.000001) return (prob * 100).toExponential(2) + '%';
   if (prob < 0.01) return (prob * 100).toFixed(6) + '%';
   return (prob * 100).toFixed(4) + '%';
 }
@@ -161,6 +161,12 @@ export function ProbabilityCalculator({ tipo }: ProbabilityCalculatorProps) {
             <span className="text-text-muted text-sm ml-2">({formatRatio(totalWinChance)})</span>
           </div>
         </div>
+
+        {(tipo === 'timemania' || tipo === 'dia_de_sorte') && (
+          <p className="text-text-muted text-xs mt-2">
+            * {tipo === 'timemania' ? 'Não inclui o prêmio do Time do Coração.' : 'Não inclui o Mês de Sorte.'}
+          </p>
+        )}
       </div>
 
       {/* Odds Table */}

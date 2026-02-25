@@ -134,11 +134,13 @@ export async function DELETE(
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
   const targetPath = `/api/${path.join('/')}`
+  const url = new URL(request.url)
+  const queryString = url.search
 
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), 30000)
   try {
-    const response = await fetch(`${BACKEND_URL}${targetPath}`, {
+    const response = await fetch(`${BACKEND_URL}${targetPath}${queryString}`, {
       method: 'DELETE',
       signal: controller.signal,
     })

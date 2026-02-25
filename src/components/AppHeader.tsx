@@ -30,13 +30,13 @@ export function AppHeader({
 }: AppHeaderProps) {
   return (
     <header className="bg-bg-secondary border-b border-border-primary sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <h1 className="text-2xl font-bold text-text-primary flex items-center gap-2">
+      <div className="max-w-7xl mx-auto px-4 py-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-6">
+            <h1 className="text-xl sm:text-2xl font-bold text-text-primary flex items-center gap-2 whitespace-nowrap">
               🎰 Loterias Analyzer
             </h1>
-            <nav className="flex gap-1 bg-surface-primary rounded-lg p-1" aria-label="Navegação principal">
+            <nav className="flex flex-wrap gap-1 bg-surface-primary rounded-lg p-1" aria-label="Navegação principal">
               <SectionButton
                 active={activeSection === 'loterias'}
                 onClick={() => onSectionChange('loterias')}
@@ -140,7 +140,7 @@ const SectionButton = memo(function SectionButton({
       )}
     >
       {icon}
-      {label}
+      <span className="hidden sm:inline">{label}</span>
     </button>
   );
 });

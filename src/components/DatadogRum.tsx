@@ -8,15 +8,21 @@ let initialized = false;
 export function DatadogRum() {
   useEffect(() => {
     if (initialized) return;
+    if (process.env.NODE_ENV !== 'production') return;
+
+    const applicationId = process.env.NEXT_PUBLIC_DD_APPLICATION_ID;
+    const clientToken = process.env.NEXT_PUBLIC_DD_CLIENT_TOKEN;
+    if (!applicationId || !clientToken) return;
+
     initialized = true;
 
     datadogRum.init({
-      applicationId: '4877e9d0-7e2a-4e79-a203-3a604ab9544c',
-      clientToken: 'pubc012fe1b1a111a2ba595f05530af85a4',
-      site: 'us5.datadoghq.com',
+      applicationId,
+      clientToken,
+      site: process.env.NEXT_PUBLIC_DD_SITE || 'us5.datadoghq.com',
       service: 'loterias-frontend',
-      env: 'prod',
-      version: '0.0.1',
+      env: process.env.NEXT_PUBLIC_DD_ENV || 'prod',
+      version: process.env.NEXT_PUBLIC_DD_VERSION || '0.0.1',
       sessionSampleRate: 100,
       sessionReplaySampleRate: 20,
       trackBfcacheViews: true,

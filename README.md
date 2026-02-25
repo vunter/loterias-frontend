@@ -1,6 +1,6 @@
 # Loterias Analyzer - Frontend
 
-Frontend React/Next.js para o sistema de análise de loterias brasileiras.
+Dashboard web para analise de loterias brasileiras. Consome a API REST do backend e apresenta estatisticas, geracao de jogos, conferencia de apostas e analises avancadas.
 
 ## Tecnologias
 
@@ -8,32 +8,56 @@ Frontend React/Next.js para o sistema de análise de loterias brasileiras.
 - React 19
 - TypeScript
 - TailwindCSS
-- Recharts (gráficos)
+- Nivo (graficos: bar, line, pie)
 - Lucide Icons
+- Datadog RUM e Logs (observabilidade)
+- Pino + Loki (logging)
 
 ## Funcionalidades
 
-### 1. Dashboard
-- Visualização do último concurso
-- Números quentes, frios e atrasados
-- Análise de padrões (pares/ímpares, altos/baixos)
-- Informações do próximo concurso
+### Dashboard
+- Ultimo concurso com numeros sorteados
+- Numeros quentes, frios e atrasados
+- Analise de padroes (pares/impares, altos/baixos)
+- Informacoes do proximo concurso e acumulado
 
-### 2. Gerador de Jogos
-- 10 estratégias de geração
-- Baseado em análise estatística
-- Cópia rápida para área de transferência
+### Gerador de Jogos
+- 10 estrategias de geracao
+- Geracao estrategica baseada em analise estatistica
+- Multi-game: gerar jogos para varias loterias de uma vez
+- Exportar jogos gerados
+- Copia rapida para area de transferencia
 
-### 3. Conferir Aposta
-- Seleção interativa de números
-- Verifica nos últimos 500 concursos
-- Mostra concursos onde teria ganhado
+### Conferir Aposta
+- Selecao interativa de numeros
+- Verificacao nos ultimos 500 concursos
+- Resultado detalhado por concurso
 
-### 4. Ranking de Números
-- Análise de todos os números
-- Score de tendência
-- Ordenação por frequência, atraso ou score
-- Números companheiros
+### Ranking de Numeros
+- Score de tendencia
+- Ordenacao por frequencia, atraso ou score
+- Numeros companheiros
+
+### Analises Avancadas
+- Analise financeira
+- Ordem de sorteio
+- Tendencias
+- Analise Dupla Sena
+- Concursos especiais
+- Ganhadores por regiao
+- Ranking de times (Timemania)
+
+### Outros
+- Calculadora de probabilidade
+- Compartilhamento social (WhatsApp, Telegram, X)
+- Tema claro/escuro
+- Historico de jogos gerados
+- Exportacao de dados (CSV)
+
+## Pre-requisitos
+
+- Node.js 22+
+- npm ou pnpm
 
 ## Executando
 
@@ -46,24 +70,19 @@ npm run dev
 
 Acesse: http://localhost:3000
 
-### Produção
+### Producao
 
 ```bash
 npm run build
 npm start
 ```
 
-## Configuração
-
-### Variáveis de Ambiente
+## Configuracao
 
 Crie um arquivo `.env.local`:
 
 ```env
-# URL do backend (usado pelo API proxy interno)
-BACKEND_URL=http://127.0.0.1:8080
-
-# Observability
+BACKEND_URL=http://127.0.0.1:8081
 LOKI_URL=http://192.168.1.193:3100
 PROMETHEUS_PUSHGATEWAY_URL=http://192.168.1.193:9091
 LOG_LEVEL=info
@@ -71,48 +90,74 @@ LOG_LEVEL=info
 
 ### API Proxy
 
-O frontend atua como proxy para o backend. Todas as chamadas `/api/*` são redirecionadas internamente para o backend via API Routes do Next.js.
+O frontend atua como proxy para o backend. Todas as chamadas `/api/*` sao redirecionadas internamente para o backend via API Routes do Next.js, evitando problemas de CORS e nao expondo o backend diretamente.
 
-**Fluxo:**
+Implementacao: `src/app/api/[...path]/route.ts`
+
+## Estrutura do Projeto
+
 ```
-Browser → Next.js (:3000) → Backend (:8080)
-           /api/*            /api/*
+src/
+├── app/
+│   ├── page.tsx                    # Pagina principal
+│   ├── layout.tsx                  # Layout raiz com providers
+│   ├── globals.css                 # Estilos globais e temas
+│   ├── error.tsx                   # Error boundary da pagina
+│   ├── loading.tsx                 # Loading state
+│   ├── robots.ts                   # SEO robots.txt
+│   ├── sitemap.ts                  # SEO sitemap
+│   └── api/
+│       ├── [...path]/route.ts      # Proxy para o backend
+│       └── health/route.ts         # Health check
+├── components/
+│   ├── AppHeader.tsx               # Header com navegacao e sync
+│   ├── AppFooter.tsx               # Footer
+│   ├── LotterySelector.tsx         # Seletor de loteria
+│   ├── Dashboard.tsx               # Dashboard principal
+│   ├── GameGenerator.tsx           # Gerador de jogos
+│   ├── MultiGameGenerator.tsx      # Gerador multi-loteria
+│   ├── BetChecker.tsx              # Conferir aposta
+│   ├── NumberRanking.tsx           # Ranking de numeros
+│   ├── NumberBall.tsx              # Componente de bola numerica
+│   ├── ExportTab.tsx               # Aba de exportacao
+│   ├── EspeciaisDashboard.tsx      # Concursos especiais
+│   ├── RegionalAnalysis.tsx        # Ganhadores por regiao
+│   ├── TimeCoracaoRanking.tsx      # Ranking de times
+│   ├── FinanceiroAnalise.tsx       # Analise financeira
+│   ├── OrdemSorteioAnalise.tsx     # Analise ordem de sorteio
+│   ├── TendenciasAnalise.tsx       # Tendencias
+│   ├── DuplaSenaAnalise.tsx        # Analise Dupla Sena
+│   ├── JogosHistorico.tsx          # Historico de jogos
+│   ├── ProbabilityCalculator.tsx   # Calculadora de probabilidade
+│   ├── ShareButtons.tsx            # Botoes de compartilhamento
+│   ├── ThemeToggle.tsx             # Toggle claro/escuro
+│   ├── ErrorBoundary.tsx           # Error boundary
+│   ├── DatadogRum.tsx              # Integracao Datadog
+│   └── WebVitalsReporter.tsx       # Metricas Web Vitals
+├── contexts/
+│   └── ThemeContext.tsx             # Contexto de tema com localStorage
+└── lib/
+    ├── api.ts                      # Cliente da API com tipos TypeScript
+    ├── loterias.ts                 # Definicoes e configuracoes de loterias
+    ├── formatters.ts               # Formatadores de numeros e moeda
+    ├── chartTheme.ts               # Tema para graficos Nivo
+    ├── game-export.ts              # Logica de exportacao de jogos
+    ├── logger.ts                   # Logger Pino com envio para Loki
+    └── metrics.ts                  # Metricas Prometheus
 ```
-
-**Vantagens:**
-- Sem problemas de CORS
-- Backend não exposto diretamente
-- Funciona de qualquer dispositivo na rede
-
-**Implementação:** `src/app/api/[...path]/route.ts`
 
 ## Loterias Suportadas
 
 - Mega-Sena
-- Lotofácil
+- Lotofacil
 - Quina
 - Lotomania
 - Timemania
 - Dupla Sena
 - Dia de Sorte
 - Super Sete
-- +Milionária
+- +Milionaria
 
-## Estrutura
+## Licenca
 
-```
-src/
-├── app/
-│   ├── page.tsx          # Página principal
-│   ├── layout.tsx        # Layout raiz
-│   └── globals.css       # Estilos globais
-├── components/
-│   ├── LotterySelector   # Seletor de loteria
-│   ├── Dashboard         # Dashboard com estatísticas
-│   ├── GameGenerator     # Gerador de jogos
-│   ├── BetChecker        # Conferir aposta
-│   ├── NumberRanking     # Ranking de números
-│   └── NumberBall        # Componente de bola numérica
-└── lib/
-    └── api.ts            # Cliente da API
-```
+Este projeto e para fins educacionais.

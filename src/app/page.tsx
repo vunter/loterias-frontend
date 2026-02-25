@@ -127,6 +127,13 @@ export default function Home() {
   const showTimeCoracaoTab = selectedLoteria === 'timemania' || selectedLoteria === 'dia_de_sorte';
   const timeCoracaoLabel = selectedLoteria === 'timemania' ? 'Times' : 'Meses';
 
+  // Reset tab when timecoracao is no longer available
+  useEffect(() => {
+    if (!showTimeCoracaoTab && activeTab === 'timecoracao') {
+      setActiveTab('dashboard');
+    }
+  }, [showTimeCoracaoTab, activeTab]);
+
   const baseTabs: { id: Tab; label: string; icon: React.ReactNode }[] = useMemo(() => [
     { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
     { id: 'tendencias', label: 'Tendências', icon: <TrendingUp className="w-5 h-5" /> },
@@ -169,13 +176,25 @@ export default function Home() {
             </div>
 
             <div className="flex gap-2 mb-6 overflow-x-auto pb-2" role="tablist" aria-label="Seções de análise">
-              {tabs.map((tab) => (
+              {tabs.map((tab, index) => (
                 <button
                   key={tab.id}
                   role="tab"
+                  tabIndex={activeTab === tab.id ? 0 : -1}
                   aria-selected={activeTab === tab.id}
                   aria-controls={`tabpanel-${tab.id}`}
                   onClick={() => setActiveTab(tab.id)}
+                  onKeyDown={(e) => {
+                    let newIndex = index;
+                    if (e.key === 'ArrowRight') newIndex = (index + 1) % tabs.length;
+                    else if (e.key === 'ArrowLeft') newIndex = (index - 1 + tabs.length) % tabs.length;
+                    else if (e.key === 'Home') newIndex = 0;
+                    else if (e.key === 'End') newIndex = tabs.length - 1;
+                    else return;
+                    e.preventDefault();
+                    setActiveTab(tabs[newIndex].id);
+                    (e.currentTarget.parentElement?.children[newIndex] as HTMLElement)?.focus();
+                  }}
                   className={clsx(
                     'flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap',
                     activeTab === tab.id
@@ -200,15 +219,14 @@ export default function Home() {
               </div>
             )}
 
-            {loading && activeTab === 'dashboard' && (
-              <div className="flex items-center justify-center p-12">
-                <Loader2 className="w-8 h-8 animate-spin text-text-tertiary" />
-              </div>
-            )}
-
-            {!loading && !error && (
+            {!error && (
               <div role="tabpanel" id={`tabpanel-${activeTab}`} aria-label={tabs.find(t => t.id === activeTab)?.label}>
-                {activeTab === 'dashboard' && dashboardData && (
+                {activeTab === 'dashboard' && loading && (
+                  <div className="flex items-center justify-center p-12">
+                    <Loader2 className="w-8 h-8 animate-spin text-text-tertiary" />
+                  </div>
+                )}
+                {activeTab === 'dashboard' && !loading && dashboardData && (
                   <ErrorBoundary name="Dashboard">
                     <Dashboard data={dashboardData} tipo={selectedLoteria} />
                   </ErrorBoundary>

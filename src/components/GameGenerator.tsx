@@ -22,6 +22,7 @@ export function GameGenerator({ tipo }: GameGeneratorProps) {
   const [selectedEstrategia, setSelectedEstrategia] = useState('ALEATORIO');
   const [quantidade, setQuantidade] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<GerarJogoResponse | null>(null);
   const [copied, setCopied] = useState<number | null>(null);
   const [copiedAll, setCopiedAll] = useState(false);
@@ -62,6 +63,7 @@ export function GameGenerator({ tipo }: GameGeneratorProps) {
 
   const handleGenerate = async () => {
     setLoading(true);
+    setError(null);
     setDebugExpanded(false);
     try {
       let data: GerarJogoResponse;
@@ -101,8 +103,9 @@ export function GameGenerator({ tipo }: GameGeneratorProps) {
         mesesSugeridos: data.mesesSugeridos,
       });
       setHistoricoKey(prev => prev + 1);
-    } catch (error) {
-      logger.error({ err: error }, 'Failed to generate games');
+    } catch (err) {
+      logger.error({ err }, 'Failed to generate games');
+      setError('Erro ao gerar jogos. Tente novamente.');
     } finally {
       setLoading(false);
     }
@@ -529,6 +532,12 @@ export function GameGenerator({ tipo }: GameGeneratorProps) {
           )}
         </button>
       </div>
+
+      {error && (
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4 text-red-700 dark:text-red-400" role="alert">
+          {error}
+        </div>
+      )}
 
       {result && (
         <div className="bg-surface-primary rounded-xl p-6 shadow-lg">
