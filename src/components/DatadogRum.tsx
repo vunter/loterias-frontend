@@ -16,21 +16,25 @@ export function DatadogRum() {
 
     initialized = true;
 
-    datadogRum.init({
-      applicationId,
-      clientToken,
-      site: process.env.NEXT_PUBLIC_DD_SITE || 'us5.datadoghq.com',
-      service: 'loterias-frontend',
-      env: process.env.NEXT_PUBLIC_DD_ENV || 'prod',
-      version: process.env.NEXT_PUBLIC_DD_VERSION || '0.0.1',
-      sessionSampleRate: 100,
-      sessionReplaySampleRate: 20,
-      trackBfcacheViews: true,
-      trackUserInteractions: true,
-      trackResources: true,
-      trackLongTasks: true,
-      defaultPrivacyLevel: 'mask-user-input',
-    });
+    try {
+      datadogRum.init({
+        applicationId,
+        clientToken,
+        site: process.env.NEXT_PUBLIC_DD_SITE || 'us5.datadoghq.com',
+        service: 'loterias-frontend',
+        env: process.env.NEXT_PUBLIC_DD_ENV || 'prod',
+        version: process.env.NEXT_PUBLIC_DD_VERSION || '0.0.1',
+        sessionSampleRate: 100,
+        sessionReplaySampleRate: 20,
+        trackBfcacheViews: true,
+        trackUserInteractions: true,
+        trackResources: true,
+        trackLongTasks: true,
+        defaultPrivacyLevel: 'mask-user-input',
+      });
+    } catch {
+      initialized = false;
+    }
   }, []);
 
   return null;

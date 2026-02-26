@@ -41,6 +41,7 @@ function buildShareUrl(tipo: TipoLoteria, result: GerarJogoResponse): string {
 
 export function ShareButtons({ tipo, result }: ShareButtonsProps) {
   const [copiedLink, setCopiedLink] = useState(false);
+  const [copyFailed, setCopyFailed] = useState(false);
 
   const text = buildShareText(tipo, result);
   const url = buildShareUrl(tipo, result);
@@ -63,14 +64,16 @@ export function ShareButtons({ tipo, result }: ShareButtonsProps) {
     window.open(`https://twitter.com/intent/tweet?text=${encoded}`, '_blank', 'noopener,noreferrer');
   };
 
+
   const copyLink = async () => {
     try {
       await navigator.clipboard.writeText(text);
       setCopiedLink(true);
+      setCopyFailed(false);
       setTimeout(() => setCopiedLink(false), 2000);
     } catch {
-      // clipboard API unavailable — show user feedback
-      setCopiedLink(false);
+      setCopyFailed(true);
+      setTimeout(() => setCopyFailed(false), 2000);
     }
   };
 
@@ -124,7 +127,7 @@ export function ShareButtons({ tipo, result }: ShareButtonsProps) {
         title="Copiar texto"
       >
         {copiedLink ? <Check className="w-4 h-4 text-green-400" /> : <Link className="w-4 h-4" />}
-        {copiedLink ? 'Copiado!' : 'Copiar'}
+        {copiedLink ? 'Copiado!' : copyFailed ? 'Falhou' : 'Copiar'}
       </button>
 
       {hasNativeShare && (

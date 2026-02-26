@@ -6,7 +6,7 @@ import logger from '@/lib/logger';
 import { ResponsiveBar } from '@nivo/bar';
 import { ResponsivePie } from '@nivo/pie';
 import { nivoTheme, CHART_COLORS } from '@/lib/chartTheme';
-import { TrendingUp, TrendingDown, Zap, Target, AlertCircle, BarChart3 } from 'lucide-react';
+import { TrendingUp, TrendingDown, Zap, Target, AlertCircle, BarChart3, Loader2 } from 'lucide-react';
 
 interface TendenciasAnaliseProps {
   loteria: TipoLoteria;
@@ -44,7 +44,7 @@ export default function TendenciasAnalise({ loteria }: TendenciasAnaliseProps) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2" style={{ borderColor: cor }}></div>
+        <Loader2 className="w-8 h-8 animate-spin text-text-tertiary" />
         <span className="ml-3 text-text-tertiary">Carregando análise de tendências...</span>
       </div>
     );
@@ -74,6 +74,7 @@ export default function TendenciasAnalise({ loteria }: TendenciasAnaliseProps) {
   }));
 
   const padroesPie = data.padroesVencedores.slice(0, 8).map((p, i) => ({
+    id: p.padrao,
     name: p.descricao.length > 20 ? p.descricao.slice(0, 20) + '...' : p.descricao,
     value: p.percentual,
     color: CHART_COLORS[i % CHART_COLORS.length]
@@ -208,7 +209,7 @@ export default function TendenciasAnalise({ loteria }: TendenciasAnaliseProps) {
           <div className="grid md:grid-cols-2 gap-6">
             <div className="h-72">
               <ResponsivePie
-                data={padroesPie.map(d => ({ id: d.name, label: d.name, value: d.value, color: d.color }))}
+                data={padroesPie.map(d => ({ id: d.id, label: d.name, value: d.value, color: d.color }))}
                 colors={{ datum: 'data.color' }}
                 margin={{ top: 30, right: 100, bottom: 30, left: 100 }}
                 innerRadius={0.4}

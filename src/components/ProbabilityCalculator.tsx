@@ -78,6 +78,18 @@ const PRIZE_TIERS: Record<string, { minAcertos: number; drawn: number }> = {
   mais_milionaria: { minAcertos: 2, drawn: 6 },
 };
 
+const JACKPOT_LABELS: Record<string, string> = {
+  mega_sena: 'Sena',
+  lotofacil: '15 acertos',
+  quina: 'Quina',
+  lotomania: '20 acertos',
+  timemania: '7 acertos',
+  dupla_sena: 'Sena',
+  dia_de_sorte: '7 acertos',
+  super_sete: '7 acertos',
+  mais_milionaria: '6 acertos',
+};
+
 export function ProbabilityCalculator({ tipo }: ProbabilityCalculatorProps) {
   const config = LOTERIA_CONFIG[tipo];
   const loteriaInfo = LOTERIAS.find(l => l.value === tipo);
@@ -193,7 +205,7 @@ export function ProbabilityCalculator({ tipo }: ProbabilityCalculatorProps) {
                       <span className={`font-bold ${isJackpot ? 'text-yellow-400' : 'text-text-primary'}`}>
                         {tier.acertos} acerto{tier.acertos !== 1 ? 's' : ''}
                       </span>
-                      {isJackpot && <span className="ml-2 text-yellow-400 text-xs">(Sena)</span>}
+                      {isJackpot && <span className="ml-2 text-yellow-400 text-xs">({JACKPOT_LABELS[tipo] || `${tier.acertos} acertos`})</span>}
                     </td>
                     <td className="py-3 px-3 text-right">
                       <span className="text-text-primary font-mono">{formatPercent(tier.probabilidade)}</span>

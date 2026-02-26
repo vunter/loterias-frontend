@@ -495,6 +495,7 @@ async function fetchApi<T>(endpoint: string, { signal }: { signal?: AbortSignal 
         continue
       }
       const duration = performance.now() - startTime
+      if (error instanceof DOMException && error.name === 'AbortError') throw error
       metrics.increment('api_requests_errors', { endpoint })
       logger.error({ endpoint, error, duration }, 'API request error')
       throw error

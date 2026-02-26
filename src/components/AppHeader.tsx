@@ -83,6 +83,7 @@ export function AppHeader({
                   : 'bg-green-700 hover:bg-green-600 disabled:opacity-50'
               )}
               title={syncCooldown > 0 ? `Aguarde ${formatCooldown(syncCooldown)} para sincronizar` : 'Sincronizar todas as loterias da Caixa'}
+              aria-label={syncCooldown > 0 ? `Aguarde ${formatCooldown(syncCooldown)} para sincronizar` : 'Sincronizar todas as loterias da Caixa'}
             >
               {syncCooldown > 0 ? (
                 <>
@@ -106,6 +107,7 @@ export function AppHeader({
               disabled={loading}
               className="p-2 bg-surface-primary rounded-lg hover:bg-surface-secondary transition-colors disabled:opacity-50"
               title="Recarregar dados"
+              aria-label="Recarregar dados"
             >
               <RefreshCw className={clsx('w-5 h-5 text-text-tertiary', loading && 'animate-spin')} />
             </button>

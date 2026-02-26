@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { api, TipoLoteria, AnaliseNumeroResponse, LOTERIAS } from '@/lib/api';
 import logger from '@/lib/logger';
 import { NumberBall } from './NumberBall';
-import { BarChart2, Loader2, TrendingUp, Clock, Thermometer } from 'lucide-react';
+import { BarChart2, Loader2, TrendingUp, Clock, Thermometer, AlertCircle } from 'lucide-react';
 
 interface NumberRankingProps {
   tipo: TipoLoteria;
@@ -13,6 +13,7 @@ interface NumberRankingProps {
 export function NumberRanking({ tipo }: NumberRankingProps) {
   const [ranking, setRanking] = useState<AnaliseNumeroResponse[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<'score' | 'frequencia' | 'atraso'>('score');
 
   const loteriaInfo = LOTERIAS.find(l => l.value === tipo);
@@ -20,9 +21,15 @@ export function NumberRanking({ tipo }: NumberRankingProps) {
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
+    setError(null);
     api.getRankingNumeros(tipo)
       .then(data => { if (!cancelled) setRanking(data); })
-      .catch(err => { if (!cancelled) logger.error({ err }, 'Failed to load number ranking'); })
+      .catch(err => {
+        if (!cancelled) {
+          setError('Erro ao carregar ranking de números');
+          logger.error({ err }, 'Failed to load number ranking');
+        }
+      })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
   }, [tipo]);
@@ -59,6 +66,15 @@ export function NumberRanking({ tipo }: NumberRankingProps) {
     return (
       <div className="flex items-center justify-center p-12">
         <Loader2 className="w-8 h-8 animate-spin text-text-tertiary" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-900/50 border border-red-700 rounded-lg p-4 flex items-center gap-2">
+        <AlertCircle className="w-5 h-5 text-red-400" />
+        <span className="text-red-200">{error}</span>
       </div>
     );
   }

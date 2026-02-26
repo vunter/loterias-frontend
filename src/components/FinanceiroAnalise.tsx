@@ -123,9 +123,7 @@ export function FinanceiroAnalise({ tipo }: Props) {
 
   const evolucaoData = useMemo(() => {
     if (!data) return [];
-    return data.evolucaoMensal.map(m => ({
-      ...m,
-    }));
+    return data.evolucaoMensal;
   }, [data]);
 
   const jackpotData = useMemo(() => {
