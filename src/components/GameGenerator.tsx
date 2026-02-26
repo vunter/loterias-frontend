@@ -49,7 +49,15 @@ export function GameGenerator({ tipo }: GameGeneratorProps) {
   const config = LOTERIA_CONFIG[tipo];
 
   useEffect(() => {
-    api.getEstrategias().then(setEstrategias).catch(err => logger.error({ err }, 'Failed to load strategies'));
+    const controller = new AbortController();
+    api.getEstrategias({ signal: controller.signal })
+      .then(setEstrategias)
+      .catch(err => {
+        if (err?.name === 'AbortError') return;
+        logger.error({ err }, 'Failed to load strategies');
+        setError('Não foi possível carregar as estratégias');
+      });
+    return () => controller.abort();
   }, []);
 
   useEffect(() => {

@@ -7,6 +7,7 @@ import type { TipoLoteria } from './loterias'
 // API calls go through Next.js rewrites (see next.config.ts)
 // This makes all API calls relative, avoiding CORS and exposing the backend
 const API_BASE = '';
+const DEFAULT_TIMEOUT_MS = 30000;
 
 export interface GanhadorInfo {
   uf: string;
@@ -421,10 +422,11 @@ export class ApiError extends Error {
 
 async function postApi<T>(endpoint: string, { signal }: { signal?: AbortSignal } = {}): Promise<T> {
   const startTime = performance.now()
+  const timeoutSignal = AbortSignal.timeout(DEFAULT_TIMEOUT_MS)
+  const combinedSignal = signal ? AbortSignal.any([signal, timeoutSignal]) : timeoutSignal
   
   try {
-    const fetchOpts: RequestInit = { method: 'POST', cache: 'no-store' };
-    if (signal instanceof AbortSignal) fetchOpts.signal = signal;
+    const fetchOpts: RequestInit = { method: 'POST', cache: 'no-store', signal: combinedSignal };
     const res = await fetch(`${API_BASE}${endpoint}`, fetchOpts);
     const duration = performance.now() - startTime
     
@@ -456,14 +458,15 @@ const MAX_RETRIES = 2
 async function fetchApi<T>(endpoint: string, { signal }: { signal?: AbortSignal } = {}): Promise<T> {
   const startTime = performance.now()
   let lastError: unknown
+  const timeoutSignal = AbortSignal.timeout(DEFAULT_TIMEOUT_MS)
+  const combinedSignal = signal ? AbortSignal.any([signal, timeoutSignal]) : timeoutSignal
 
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     try {
       if (attempt > 0) {
         await new Promise(resolve => setTimeout(resolve, attempt * 1000))
       }
-      const fetchOpts: RequestInit = { cache: 'no-store' };
-      if (signal instanceof AbortSignal) fetchOpts.signal = signal;
+      const fetchOpts: RequestInit = { cache: 'no-store', signal: combinedSignal };
       const res = await fetch(`${API_BASE}${endpoint}`, fetchOpts);
       const duration = performance.now() - startTime
 
@@ -508,8 +511,8 @@ export const api = {
   getRankingNumeros: (tipo: TipoLoteria) =>
     fetchApi<AnaliseNumeroResponse[]>(`/api/dashboard/${tipo}/numeros/ranking`),
   
-  getEstrategias: () =>
-    fetchApi<Estrategia[]>(`/api/estatisticas/estrategias`),
+  getEstrategias: ({ signal }: { signal?: AbortSignal } = {}) =>
+    fetchApi<Estrategia[]>(`/api/estatisticas/estrategias`, { signal }),
   
   gerarJogosEstrategico: (tipo: TipoLoteria, estrategia: string, quantidade: number, quantidadeNumeros?: number, debug: boolean = false, quantidadeTrevos?: number) => {
     const params = new URLSearchParams();
