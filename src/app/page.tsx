@@ -162,7 +162,7 @@ export default function Home() {
         syncCooldown={syncCooldown}
         formatCooldown={formatCooldown}
         onSync={syncAndLoad}
-        onRefresh={loadDashboard}
+        onRefresh={() => loadDashboard()}
       />
 
       <div className="flex-1 flex flex-col">
