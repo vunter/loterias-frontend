@@ -14,7 +14,8 @@ import { FinanceiroAnalise } from '@/components/FinanceiroAnalise';
 import { DuplaSenaAnalise } from '@/components/DuplaSenaAnalise';
 import { TimeCoracaoRanking } from '@/components/TimeCoracaoRanking';
 import TendenciasAnalise from '@/components/TendenciasAnalise';
-import { Sidebar, Section, TabDef } from '@/components/Sidebar';
+import { AppHeader, Section } from '@/components/AppHeader';
+import { AnalysisTabs, AnalysisTabsMobile, TabDef } from '@/components/AnalysisTabs';
 import { AppFooter } from '@/components/AppFooter';
 import { ExportTab } from '@/components/ExportTab';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
@@ -152,23 +153,19 @@ export default function Home() {
     : baseTabs;
 
   return (
-    <div className="min-h-screen bg-bg-primary flex flex-col lg:flex-row">
-      <Sidebar
+    <div className="min-h-screen bg-bg-primary flex flex-col">
+      <AppHeader
         activeSection={activeSection}
         onSectionChange={setActiveSection}
-        activeTab={activeTab}
-        onTabChange={(tab) => setActiveTab(tab as Tab)}
-        tabs={tabs as TabDef[]}
         syncing={syncing}
         loading={loading}
         syncCooldown={syncCooldown}
         formatCooldown={formatCooldown}
         onSync={syncAndLoad}
         onRefresh={loadDashboard}
-        loteriaColor={loteriaInfo?.color}
       />
 
-      <div className="flex-1 flex flex-col min-h-screen pt-14 lg:pt-0">
+      <div className="flex-1 flex flex-col">
         <main className="flex-1 px-4 py-6 lg:px-8 max-w-7xl w-full mx-auto">
           {activeSection === 'especiais' && <ErrorBoundary name="Concursos Especiais"><EspeciaisDashboard /></ErrorBoundary>}
           {activeSection === 'dupla-sena' && <ErrorBoundary name="Dupla Sena"><DuplaSenaAnalise /></ErrorBoundary>}
@@ -180,40 +177,62 @@ export default function Home() {
                 <LotterySelector selected={selectedLoteria} onSelect={setSelectedLoteria} />
               </div>
 
-              {error && (
-                <div role="alert" className="bg-red-900/50 border border-red-700 text-red-400 rounded-xl p-4 mb-6">
-                  <p className="font-medium">Erro de conexão</p>
-                  <p className="text-sm">{error}</p>
-                  <button onClick={() => loadDashboard()} className="mt-2 text-sm underline hover:no-underline">
-                    Tentar novamente
-                  </button>
-                </div>
-              )}
+              {/* Mobile tabs (horizontal scroll) */}
+              <div className="mb-4">
+                <AnalysisTabsMobile
+                  tabs={tabs as TabDef[]}
+                  activeTab={activeTab}
+                  onTabChange={(tab) => setActiveTab(tab as Tab)}
+                  loteriaColor={loteriaInfo?.color}
+                />
+              </div>
 
-              {!error && (
-                <div role="tabpanel" id={`tabpanel-${activeTab}`} aria-label={tabs.find(t => t.id === activeTab)?.label}>
-                  {activeTab === 'dashboard' && loading && (
-                    <div className="flex items-center justify-center p-12">
-                      <Loader2 className="w-8 h-8 animate-spin text-text-tertiary" />
+              <div className="flex gap-6">
+                {/* Desktop vertical tabs */}
+                <AnalysisTabs
+                  tabs={tabs as TabDef[]}
+                  activeTab={activeTab}
+                  onTabChange={(tab) => setActiveTab(tab as Tab)}
+                  loteriaColor={loteriaInfo?.color}
+                />
+
+                <div className="flex-1 min-w-0" role="tabpanel" id={`tabpanel-${activeTab}`} aria-label={tabs.find(t => t.id === activeTab)?.label}>
+                  {error && (
+                    <div role="alert" className="bg-red-900/50 border border-red-700 text-red-400 rounded-xl p-4 mb-6">
+                      <p className="font-medium">Erro de conexão</p>
+                      <p className="text-sm">{error}</p>
+                      <button onClick={() => loadDashboard()} className="mt-2 text-sm underline hover:no-underline">
+                        Tentar novamente
+                      </button>
                     </div>
                   )}
-                  {activeTab === 'dashboard' && !loading && dashboardData && (
-                    <ErrorBoundary name="Dashboard">
-                      <Dashboard data={dashboardData} tipo={selectedLoteria} />
-                    </ErrorBoundary>
+
+                  {!error && (
+                    <>
+                      {activeTab === 'dashboard' && loading && (
+                        <div className="flex items-center justify-center p-12">
+                          <Loader2 className="w-8 h-8 animate-spin text-text-tertiary" />
+                        </div>
+                      )}
+                      {activeTab === 'dashboard' && !loading && dashboardData && (
+                        <ErrorBoundary name="Dashboard">
+                          <Dashboard data={dashboardData} tipo={selectedLoteria} />
+                        </ErrorBoundary>
+                      )}
+                      {activeTab === 'tendencias' && <ErrorBoundary name="Tendências"><TendenciasAnalise loteria={selectedLoteria} /></ErrorBoundary>}
+                      {activeTab === 'ordem' && <ErrorBoundary name="Ordem Sorteio"><OrdemSorteioAnalise tipo={selectedLoteria} /></ErrorBoundary>}
+                      {activeTab === 'financeiro' && <ErrorBoundary name="Financeiro"><FinanceiroAnalise tipo={selectedLoteria} /></ErrorBoundary>}
+                      {activeTab === 'generator' && <ErrorBoundary name="Gerador"><GameGenerator tipo={selectedLoteria} /></ErrorBoundary>}
+                      {activeTab === 'checker' && <ErrorBoundary name="Conferir"><BetChecker tipo={selectedLoteria} /></ErrorBoundary>}
+                      {activeTab === 'ranking' && <ErrorBoundary name="Ranking"><NumberRanking tipo={selectedLoteria} /></ErrorBoundary>}
+                      {activeTab === 'regional' && <ErrorBoundary name="Regional"><RegionalAnalysis tipo={selectedLoteria} /></ErrorBoundary>}
+                      {activeTab === 'probabilidade' && <ErrorBoundary name="Probabilidades"><ProbabilityCalculator tipo={selectedLoteria} /></ErrorBoundary>}
+                      {activeTab === 'timecoracao' && <ErrorBoundary name="Time/Mês"><TimeCoracaoRanking tipo={selectedLoteria} /></ErrorBoundary>}
+                      {activeTab === 'exportar' && <ErrorBoundary name="Exportar"><ExportTab tipo={selectedLoteria} /></ErrorBoundary>}
+                    </>
                   )}
-                  {activeTab === 'tendencias' && <ErrorBoundary name="Tendências"><TendenciasAnalise loteria={selectedLoteria} /></ErrorBoundary>}
-                  {activeTab === 'ordem' && <ErrorBoundary name="Ordem Sorteio"><OrdemSorteioAnalise tipo={selectedLoteria} /></ErrorBoundary>}
-                  {activeTab === 'financeiro' && <ErrorBoundary name="Financeiro"><FinanceiroAnalise tipo={selectedLoteria} /></ErrorBoundary>}
-                  {activeTab === 'generator' && <ErrorBoundary name="Gerador"><GameGenerator tipo={selectedLoteria} /></ErrorBoundary>}
-                  {activeTab === 'checker' && <ErrorBoundary name="Conferir"><BetChecker tipo={selectedLoteria} /></ErrorBoundary>}
-                  {activeTab === 'ranking' && <ErrorBoundary name="Ranking"><NumberRanking tipo={selectedLoteria} /></ErrorBoundary>}
-                  {activeTab === 'regional' && <ErrorBoundary name="Regional"><RegionalAnalysis tipo={selectedLoteria} /></ErrorBoundary>}
-                  {activeTab === 'probabilidade' && <ErrorBoundary name="Probabilidades"><ProbabilityCalculator tipo={selectedLoteria} /></ErrorBoundary>}
-                  {activeTab === 'timecoracao' && <ErrorBoundary name="Time/Mês"><TimeCoracaoRanking tipo={selectedLoteria} /></ErrorBoundary>}
-                  {activeTab === 'exportar' && <ErrorBoundary name="Exportar"><ExportTab tipo={selectedLoteria} /></ErrorBoundary>}
                 </div>
-              )}
+              </div>
             </>
           )}
         </main>
