@@ -10,7 +10,7 @@ interface LotterySelectorProps {
 
 export function LotterySelector({ selected, onSelect }: LotterySelectorProps) {
   return (
-    <div className="flex flex-wrap gap-2 p-4 bg-bg-secondary rounded-lg" role="radiogroup" aria-label="Selecionar loteria">
+    <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-2 p-3 bg-bg-secondary rounded-lg" role="radiogroup" aria-label="Selecionar loteria">
       {LOTERIAS.map((loteria) => (
         <button
           key={loteria.value}
@@ -18,7 +18,7 @@ export function LotterySelector({ selected, onSelect }: LotterySelectorProps) {
           aria-checked={selected === loteria.value}
           onClick={() => onSelect(loteria.value)}
           className={clsx(
-            'px-4 py-2 rounded-lg font-medium transition-all duration-200',
+            'px-2 py-2.5 rounded-lg font-medium transition-all duration-200 text-sm text-center',
             'hover:scale-105 hover:shadow-lg',
             selected === loteria.value
               ? 'text-white shadow-lg scale-105'

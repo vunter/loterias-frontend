@@ -14,7 +14,7 @@ import { FinanceiroAnalise } from '@/components/FinanceiroAnalise';
 import { DuplaSenaAnalise } from '@/components/DuplaSenaAnalise';
 import { TimeCoracaoRanking } from '@/components/TimeCoracaoRanking';
 import TendenciasAnalise from '@/components/TendenciasAnalise';
-import { AppHeader, Section } from '@/components/AppHeader';
+import { Sidebar, Section, TabDef } from '@/components/Sidebar';
 import { AppFooter } from '@/components/AppFooter';
 import { ExportTab } from '@/components/ExportTab';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
@@ -152,102 +152,74 @@ export default function Home() {
     : baseTabs;
 
   return (
-    <main className="min-h-screen bg-bg-primary">
-      <AppHeader
+    <div className="min-h-screen bg-bg-primary flex flex-col lg:flex-row">
+      <Sidebar
         activeSection={activeSection}
         onSectionChange={setActiveSection}
+        activeTab={activeTab}
+        onTabChange={(tab) => setActiveTab(tab as Tab)}
+        tabs={tabs as TabDef[]}
         syncing={syncing}
         loading={loading}
         syncCooldown={syncCooldown}
         formatCooldown={formatCooldown}
         onSync={syncAndLoad}
         onRefresh={loadDashboard}
+        loteriaColor={loteriaInfo?.color}
       />
 
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        {activeSection === 'especiais' && <ErrorBoundary name="Concursos Especiais"><EspeciaisDashboard /></ErrorBoundary>}
-        {activeSection === 'dupla-sena' && <ErrorBoundary name="Dupla Sena"><DuplaSenaAnalise /></ErrorBoundary>}
-        {activeSection === 'multi-gerador' && <ErrorBoundary name="Multi Gerador"><MultiGameGenerator /></ErrorBoundary>}
-        
-        {activeSection === 'loterias' && (
-          <>
-            <div className="mb-6">
-              <LotterySelector selected={selectedLoteria} onSelect={setSelectedLoteria} />
-            </div>
+      <div className="flex-1 flex flex-col min-h-screen pt-14 lg:pt-0">
+        <main className="flex-1 px-4 py-6 lg:px-8 max-w-7xl w-full mx-auto">
+          {activeSection === 'especiais' && <ErrorBoundary name="Concursos Especiais"><EspeciaisDashboard /></ErrorBoundary>}
+          {activeSection === 'dupla-sena' && <ErrorBoundary name="Dupla Sena"><DuplaSenaAnalise /></ErrorBoundary>}
+          {activeSection === 'multi-gerador' && <ErrorBoundary name="Multi Gerador"><MultiGameGenerator /></ErrorBoundary>}
 
-            <div className="flex gap-2 mb-6 overflow-x-auto pb-2" role="tablist" aria-label="Seções de análise">
-              {tabs.map((tab, index) => (
-                <button
-                  key={tab.id}
-                  role="tab"
-                  tabIndex={activeTab === tab.id ? 0 : -1}
-                  aria-selected={activeTab === tab.id}
-                  aria-controls={`tabpanel-${tab.id}`}
-                  onClick={() => setActiveTab(tab.id)}
-                  onKeyDown={(e) => {
-                    let newIndex = index;
-                    if (e.key === 'ArrowRight') newIndex = (index + 1) % tabs.length;
-                    else if (e.key === 'ArrowLeft') newIndex = (index - 1 + tabs.length) % tabs.length;
-                    else if (e.key === 'Home') newIndex = 0;
-                    else if (e.key === 'End') newIndex = tabs.length - 1;
-                    else return;
-                    e.preventDefault();
-                    setActiveTab(tabs[newIndex].id);
-                    (e.currentTarget.parentElement?.children[newIndex] as HTMLElement)?.focus();
-                  }}
-                  className={clsx(
-                    'flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap',
-                    activeTab === tab.id
-                      ? 'text-white shadow-lg'
-                      : 'bg-surface-primary text-text-tertiary hover:bg-surface-secondary hover:text-text-primary'
+          {activeSection === 'loterias' && (
+            <>
+              <div className="mb-6">
+                <LotterySelector selected={selectedLoteria} onSelect={setSelectedLoteria} />
+              </div>
+
+              {error && (
+                <div role="alert" className="bg-red-900/50 border border-red-700 text-red-400 rounded-xl p-4 mb-6">
+                  <p className="font-medium">Erro de conexão</p>
+                  <p className="text-sm">{error}</p>
+                  <button onClick={() => loadDashboard()} className="mt-2 text-sm underline hover:no-underline">
+                    Tentar novamente
+                  </button>
+                </div>
+              )}
+
+              {!error && (
+                <div role="tabpanel" id={`tabpanel-${activeTab}`} aria-label={tabs.find(t => t.id === activeTab)?.label}>
+                  {activeTab === 'dashboard' && loading && (
+                    <div className="flex items-center justify-center p-12">
+                      <Loader2 className="w-8 h-8 animate-spin text-text-tertiary" />
+                    </div>
                   )}
-                  style={activeTab === tab.id ? { backgroundColor: loteriaInfo?.color } : {}}
-                >
-                  {tab.icon}
-                  {tab.label}
-                </button>
-              ))}
-            </div>
+                  {activeTab === 'dashboard' && !loading && dashboardData && (
+                    <ErrorBoundary name="Dashboard">
+                      <Dashboard data={dashboardData} tipo={selectedLoteria} />
+                    </ErrorBoundary>
+                  )}
+                  {activeTab === 'tendencias' && <ErrorBoundary name="Tendências"><TendenciasAnalise loteria={selectedLoteria} /></ErrorBoundary>}
+                  {activeTab === 'ordem' && <ErrorBoundary name="Ordem Sorteio"><OrdemSorteioAnalise tipo={selectedLoteria} /></ErrorBoundary>}
+                  {activeTab === 'financeiro' && <ErrorBoundary name="Financeiro"><FinanceiroAnalise tipo={selectedLoteria} /></ErrorBoundary>}
+                  {activeTab === 'generator' && <ErrorBoundary name="Gerador"><GameGenerator tipo={selectedLoteria} /></ErrorBoundary>}
+                  {activeTab === 'checker' && <ErrorBoundary name="Conferir"><BetChecker tipo={selectedLoteria} /></ErrorBoundary>}
+                  {activeTab === 'ranking' && <ErrorBoundary name="Ranking"><NumberRanking tipo={selectedLoteria} /></ErrorBoundary>}
+                  {activeTab === 'regional' && <ErrorBoundary name="Regional"><RegionalAnalysis tipo={selectedLoteria} /></ErrorBoundary>}
+                  {activeTab === 'probabilidade' && <ErrorBoundary name="Probabilidades"><ProbabilityCalculator tipo={selectedLoteria} /></ErrorBoundary>}
+                  {activeTab === 'timecoracao' && <ErrorBoundary name="Time/Mês"><TimeCoracaoRanking tipo={selectedLoteria} /></ErrorBoundary>}
+                  {activeTab === 'exportar' && <ErrorBoundary name="Exportar"><ExportTab tipo={selectedLoteria} /></ErrorBoundary>}
+                </div>
+              )}
+            </>
+          )}
+        </main>
 
-            {error && (
-              <div role="alert" className="bg-red-900/50 border border-red-700 text-red-400 rounded-xl p-4 mb-6">
-                <p className="font-medium">Erro de conexão</p>
-                <p className="text-sm">{error}</p>
-                <button onClick={() => loadDashboard()} className="mt-2 text-sm underline hover:no-underline">
-                  Tentar novamente
-                </button>
-              </div>
-            )}
-
-            {!error && (
-              <div role="tabpanel" id={`tabpanel-${activeTab}`} aria-label={tabs.find(t => t.id === activeTab)?.label}>
-                {activeTab === 'dashboard' && loading && (
-                  <div className="flex items-center justify-center p-12">
-                    <Loader2 className="w-8 h-8 animate-spin text-text-tertiary" />
-                  </div>
-                )}
-                {activeTab === 'dashboard' && !loading && dashboardData && (
-                  <ErrorBoundary name="Dashboard">
-                    <Dashboard data={dashboardData} tipo={selectedLoteria} />
-                  </ErrorBoundary>
-                )}
-                {activeTab === 'tendencias' && <ErrorBoundary name="Tendências"><TendenciasAnalise loteria={selectedLoteria} /></ErrorBoundary>}
-                {activeTab === 'ordem' && <ErrorBoundary name="Ordem Sorteio"><OrdemSorteioAnalise tipo={selectedLoteria} /></ErrorBoundary>}
-                {activeTab === 'financeiro' && <ErrorBoundary name="Financeiro"><FinanceiroAnalise tipo={selectedLoteria} /></ErrorBoundary>}
-                {activeTab === 'generator' && <ErrorBoundary name="Gerador"><GameGenerator tipo={selectedLoteria} /></ErrorBoundary>}
-                {activeTab === 'checker' && <ErrorBoundary name="Conferir"><BetChecker tipo={selectedLoteria} /></ErrorBoundary>}
-                {activeTab === 'ranking' && <ErrorBoundary name="Ranking"><NumberRanking tipo={selectedLoteria} /></ErrorBoundary>}
-                {activeTab === 'regional' && <ErrorBoundary name="Regional"><RegionalAnalysis tipo={selectedLoteria} /></ErrorBoundary>}
-                {activeTab === 'probabilidade' && <ErrorBoundary name="Probabilidades"><ProbabilityCalculator tipo={selectedLoteria} /></ErrorBoundary>}
-                {activeTab === 'timecoracao' && <ErrorBoundary name="Time/Mês"><TimeCoracaoRanking tipo={selectedLoteria} /></ErrorBoundary>}
-                {activeTab === 'exportar' && <ErrorBoundary name="Exportar"><ExportTab tipo={selectedLoteria} /></ErrorBoundary>}
-              </div>
-            )}
-          </>
-        )}
+        <AppFooter />
       </div>
-
-      <AppFooter />
-    </main>
+    </div>
   );
 }
